@@ -6,6 +6,8 @@ from shutil import copytree, ignore_patterns
 from os import path
 from helpers import u, op1, backups
 
+PACK_PATH = path.join(u.HOME, "packs")
+
 def get_preset_path(mount, type, preset):
     return os.path.join(mount, type, "user", "%d.aif"%(preset))
 
@@ -34,21 +36,13 @@ def make(name, group, type, preset):
 @click.command()
 def sync():
     mount = op1.get_mount_or_die_trying()
-    target = os.path.join(u.HOME, "packs")
 
-    skipped = 0
     copies = []
+    skipped = 0
     for source in ["synth", "drum"]:
-        for root, dirs, files in os.walk(os.path.join(mount, source), topdown=True):
-            if "user" in dirs:
-                del dirs[dirs.index("user")]
-            for file in files:
-                src = path.join(root, file)
-                dst = path.join(target, path.relpath(src, mount))
-                if not path.exists(dst) or u.get_file_checksum(src) != u.get_file_checksum(dst):
-                    copies.append((src, dst))
-                else:
-                    skipped += 1
+        (copy, skip) = u.dirtydiff(mount, source, PACK_PATH)
+        copies += copy
+        skipped += skip
 
     if len(copies) > 0:
         with click.progressbar(copies) as tasks:
@@ -56,16 +50,26 @@ def sync():
                 os.makedirs(path.split(task[1])[0], exist_ok=True)
                 shutil.copy2(task[0], task[1])
 
-    click.echo("done! skipped %d files since they're unchanged." % (skipped))
+    click.echo("done! skipped %d unchanged files." % (skipped))
 
 
 @click.command()
 @click.option('--type', '-t', prompt=True)
-@click.option('--name', '-n', prompt=True)
 @click.option('--group', '-g', prompt=True)
-def push():
-    click.echo("not yet implemented")
+def push(type, group):
+    mount = op1.get_mount_or_die_trying()
+    (copies, skipped) = u.dirtydiff(path.join(PACK_PATH, type), group, path.join(mount, type))
+
+    if len(copies) > 0:
+        with click.progressbar(copies) as tasks:
+            for task in tasks:
+                os.makedirs(path.split(task[1])[0], exist_ok=True)
+                shutil.copy2(task[0], task[1])
+
+    click.echo("done! skipped %d unchanged files." % (skipped))
 
 
 cli.add_command(make)
 cli.add_command(sync)
+cli.add_command(push)
+
