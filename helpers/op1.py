@@ -34,7 +34,7 @@ def get_mount_or_die_trying():
     mount = find_op1_mount()
     if mount is None:
         print("Waiting for OP-1 disk to mount...")
-        mount = op1.wait_for_op1_mount()
+        mount = wait_for_op1_mount()
         if mount is None:
             exit("Failed to find mount point of OP-1. Feel free to file an issue.")
     return mount
