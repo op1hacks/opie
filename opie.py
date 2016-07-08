@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import click
 import os
@@ -7,7 +7,7 @@ plugin_folder = os.path.join(os.path.dirname(__file__), 'commands')
 
 class OpieCLI(click.MultiCommand):
     def __init__(self, **attrs):
-        click.MultiCommand.__init__(self, invoke_without_command=True, no_args_is_help=False, **attrs)
+        click.MultiCommand.__init__(self, invoke_without_command=True, no_args_is_help=False, chain=False, **attrs)
 
     def list_commands(self, ctx):
         rv = []
@@ -25,8 +25,7 @@ class OpieCLI(click.MultiCommand):
             eval(code, ns, ns)
         return ns['cli']
 
-cli = OpieCLI(help='This tool\'s subcommands are loaded from a '
-            'plugin folder dynamically.')
+cli = OpieCLI()
 
 if __name__ == '__main__':
     cli()
