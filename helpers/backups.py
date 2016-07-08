@@ -9,7 +9,7 @@ import usb.util
 from helpers import u
 from datetime import datetime
 
-BACKUPS_DIR = os.path.join(os.getenv("HOME"), ".opie", "backups")
+BACKUPS_DIR = os.path.join(u.HOME, "backups")
 ARCHIVE_FORMAT = "opie-backup-%Y-%m-%d-%H%M%S.tar.xz"
 
 def assert_environment():
