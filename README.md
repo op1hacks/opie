@@ -8,12 +8,12 @@ Opie is the desktop frand for the OP-1.
 
 `opie restore` to choose a backup file and restore to a plugged-in OP-1
 
+`opie pack make` to turn one of your user presets into a named preset in a specified folder
+
 ## features
 🚼 backup & restore (currently only full backup/restore supported)
-
+🚼 preset helper (choose your presets and make a named "pack" out of them)
 ## ideas
-💡 preset helper (choose your presets and make a named "pack" out of them)
-
 💡 online sound pack repository and space management, homebrew for sweet soundz
 
 💡 album "import" (converting from OP-1 to WAV/FLAC via ffmpeg, possibly cutting silence and normalizing)
