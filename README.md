@@ -12,7 +12,9 @@ Opie is the desktop frand for the OP-1.
 
 ## features
 🚼 backup & restore (currently only full backup/restore supported)
+
 🚼 preset helper (choose your presets and make a named "pack" out of them)
+
 ## ideas
 💡 online sound pack repository and space management, homebrew for sweet soundz
 
