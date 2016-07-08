@@ -60,11 +60,12 @@ def wait_for_op1_mount(timeout=5, root="/Volumes"):
 
 def generate_archive(mount, save_dir):
     name = os.path.join(save_dir, datetime.now().strftime(ARCHIVE_FORMAT))
+    print("writing backup as %s" % (name))
     with tarfile.open(name, "x:xz") as tar:
         with click.progressbar(get_visible_children(mount)) as children:
             for child in children:
                 tar.add(os.path.join(mount, child), child, exclude=lambda x: x[0] == '.')
-    print("created %s" % (name))
+    print("backup created.")
 
 def restore_archive(file, mount):
     with tarfile.open(file, "r:xz") as tar:

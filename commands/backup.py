@@ -10,13 +10,12 @@ from datetime import datetime
 from helpers import backups
 
 @click.command(cls=opie.OpieCLI)
-@click.argument('sections')
-def cli(sections):
+def cli():
     backups.assert_environment()
 
     if not backups.is_connected():
         print("Please connect your OP-1 and put it in DISK mode (Shift+COM -> 3)...")
-        wait_for_connection()
+        backups.wait_for_connection()
 
     print("OP-1 detected!")
 
@@ -28,4 +27,4 @@ def cli(sections):
             exit("Failed to find mount point of OP-1. Feel free to file an issue.")
     print("Found at %s" % mount)
 
-    backups.generate_archive(mount, BACKUPS_DIR)
+    backups.generate_archive(mount, backups.BACKUPS_DIR)

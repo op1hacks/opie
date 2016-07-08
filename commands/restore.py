@@ -10,10 +10,10 @@ from datetime import datetime
 from helpers import backups
 
 @click.command(cls=opie.OpieCLI)
-# @click.option('file', help="The direct path of an archive to restore.", default=None)
 def cli():
     backups.assert_environment()
 
+    click.echo("backups found in " + backups.BACKUPS_DIR)
     archives = backups.get_visible_children(backups.BACKUPS_DIR)
     i = 0
     for archive in archives:
