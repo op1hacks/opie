@@ -13,8 +13,6 @@ BACKUPS_DIR = os.path.join(u.HOME, "backups")
 ARCHIVE_FORMAT = "opie-backup-%Y-%m-%d-%H%M%S.tar.xz"
 
 def assert_environment():
-    if sys.platform != "darwin":
-        sys.exit("Currently only OS X is supported. Pull requests are accepted ;)")
     os.makedirs(BACKUPS_DIR, exist_ok=True)
 
 def generate_archive(mount, save_dir):
