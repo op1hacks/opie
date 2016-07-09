@@ -6,7 +6,7 @@ import click
 import tarfile
 import usb.core
 import usb.util
-from helpers import u
+from helpers import u, mount
 
 VENDOR_TE = 0x2367
 PRODUCT_OP1 = 0x0002
@@ -39,25 +39,32 @@ def get_mount_or_die_trying():
             exit("Failed to find mount point of OP-1. Feel free to file an issue.")
     return mount
 
-
-def find_op1_mount(root="/Volumes"):
-    dirs = u.get_visible_folders(root)
+def find_op1_mount():
+    dirs = []
+    mounts = mount.get_potential_mounts()
+    if mounts is None:
+        dirs = [os.path.join("/Volumes", x) for x in u.get_visible_folders("/Volumes")]
+    else:
+        dirs = [x[1] for x in mounts]
 
     for dir in dirs:
-        subdirs = u.get_visible_folders(os.path.join(root, dir))
+        subdirs = u.get_visible_folders(dir)
         if set(subdirs) & OP1_BASE_DIRS == OP1_BASE_DIRS:
-            return os.path.join(root, dir)
+            return dir
+
     return None
 
-def wait_for_op1_mount(timeout=5, root="/Volumes"):
+def wait_for_op1_mount(timeout=5):
     i=0
     try:
         while i < timeout:
             time.sleep(1)
-            mount = find_op1_mount(root)
+            mount = find_op1_mount()
             if mount is not None:
                 return mount
             i += 1
+        print("timed out waiting for mount.")
+        return None
     except KeyboardInterrupt:
         sys.exit(0)
 
