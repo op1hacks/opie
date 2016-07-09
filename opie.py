@@ -7,7 +7,7 @@ plugin_folder = os.path.join(os.path.dirname(__file__), 'commands')
 
 class OpieCLI(click.MultiCommand):
     def __init__(self, **attrs):
-        click.MultiCommand.__init__(self, invoke_without_command=True, no_args_is_help=False, chain=False, **attrs)
+        click.MultiCommand.__init__(self, invoke_without_command=True, no_args_is_help=True, chain=False, **attrs)
 
     def list_commands(self, ctx):
         rv = []
