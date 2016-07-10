@@ -1,8 +1,19 @@
 import os
 import hashlib
+import configparser
 from os import path
 
 HOME = os.path.join(os.getenv("HOME"), ".opie")
+CONFIG_FILE = path.join(HOME, "opie.cfg")
+
+def get_config():
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    return config
+
+def write_config(config):
+    with open(CONFIG_FILE, 'w') as configfile:
+        config.write(configfile)
 
 def get_visible_folders(d):
     return list(filter(lambda x: os.path.isdir(os.path.join(d, x)), get_visible_children(d)))

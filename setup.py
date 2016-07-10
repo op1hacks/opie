@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='opie',
-    version='0.0.3',
+    version='0.0.4',
     author='Jake McGinty',
     author_email='me@jake.su',
     description=("A helping friend for the OP-1 synthesizer."),
@@ -10,7 +10,9 @@ setup(
     packages=['commands', 'helpers'],
     install_requires=[
         'Click',
-        'pyusb'
+        'pyusb',
+        'requests',
+        'colorama',
     ],
     entry_points='''
         [console_scripts]

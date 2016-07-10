@@ -2,10 +2,13 @@ import os
 import opie
 import click
 import shutil
+from urllib.parse import urlparse
 from shutil import copytree, ignore_patterns
 from os import path
 from helpers import u, op1, backups
 import tarfile
+import requests
+from requests.auth import HTTPBasicAuth
 
 PACK_PATH = path.join(u.HOME, "packs")
 EXPORT_PATH = path.join(u.HOME, "pkg")
@@ -82,9 +85,61 @@ def export(group, type, output_dir):
         tar.add(source, path.join(type, group), exclude=lambda x: x[0] == '.')
     click.echo("exported as %s" % name)
 
+def get_user():
+    config = u.get_config()
+    if not 'auth' in config: return None
+    return config['auth']['username']
+
+def get_pass():
+    config = u.get_config()
+    if not 'auth' in config: return None
+    return config['auth']['password']
+
 @click.command()
-@click.argument("file")
-def add(file):
+@click.argument('input', type=click.Path(exists=True))
+@click.option('--name', '-n', prompt=True)
+@click.option('--description', '-d', prompt=True)
+def upload(input, name, description):
+    username = get_user()
+    if username is None:
+        username = click.prompt("username", type=str)
+        password = click.prompt("password", type=str, hide_input=True)
+        config = u.get_config()
+        if not 'auth' in config: config['auth'] = {}
+        config['auth']['username'] = username
+        config['auth']['password'] = password
+        u.write_config(config)
+    else:
+        password = get_pass()
+    url = 'http://localhost:5000/upload'
+    files = [('file', open(input, 'rb'))]
+    auth = HTTPBasicAuth(username, password)
+    metadata = {
+        'name': name,
+        'description': description,
+    }
+
+    r = requests.post(url, files=files, data=metadata, auth=auth, allow_redirects=False)
+    click.echo(r.status_code)
+    click.echo(r.headers['Location'])
+
+@click.command()
+@click.argument('url')
+def download(url):
+    click.echo("downloading {}".format(url))
+    fname = path.basename(urlparse(url).path)
+    fullpath = path.join(EXPORT_PATH, fname)
+    if path.exists(fullpath):
+        click.echo("already downloaded!")
+    else:
+        r = requests.get(url)
+        with open(fullpath, 'wb') as f:
+            f.write(r.content)
+
+        click.echo("saved to {}".format(fullpath))
+    imp(fullpath)
+
+def imp(file):
     if not path.exists(file):
         click.echo("File doesn't exist.")
 
@@ -98,6 +153,11 @@ def add(file):
             click.echo(member.name)
 
         click.echo("\ndone!")
+
+@click.command()
+@click.argument("file")
+def add(file):
+    imp(file)
 
 @click.command()
 def list():
@@ -118,4 +178,6 @@ cli.add_command(push)
 cli.add_command(export)
 cli.add_command(add)
 cli.add_command(list)
+cli.add_command(upload)
+cli.add_command(download)
 
