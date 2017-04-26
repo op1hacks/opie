@@ -18,5 +18,5 @@ def cli():
     if mount is None:
         exit("Looks like your best friend already dismounted.")
 
-    click.echo("attempting to unmount...")
-    click.echo(run(["diskutil", "unmount", mount], stderr=subprocess.STDOUT).stdout)
+    click.echo("attempting to eject...")
+    click.echo(run(["diskutil", "eject", mount], stderr=subprocess.STDOUT).stdout)
