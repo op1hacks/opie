@@ -55,7 +55,7 @@ def sync():
                 os.makedirs(path.split(task[1])[0], exist_ok=True)
                 shutil.copy2(task[0], task[1])
 
-    click.echo("done! skipped %d unchanged files." % (skipped))
+    click.echo("done! copied %d files, and skipped %d unchanged files." % (len(copies), skipped))
 
 
 @click.command()

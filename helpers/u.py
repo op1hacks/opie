@@ -3,7 +3,7 @@ import hashlib
 import configparser
 from os import path
 
-HOME = os.path.join(os.getenv("HOME"), ".opie")
+HOME = os.path.join(os.getenv("HOME"), "opie")
 CONFIG_FILE = path.join(HOME, "opie.cfg")
 
 def get_config():
