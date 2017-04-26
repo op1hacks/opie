@@ -20,4 +20,3 @@ def cli():
 
     click.echo("attempting to unmount...")
     click.echo(run(["diskutil", "unmount", mount], stderr=subprocess.STDOUT).stdout)
-
