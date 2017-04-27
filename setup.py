@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='opie',
-    version='0.0.7',
+    version='0.0.8',
     author='Jake McGinty',
     author_email='me@jake.su',
     description=("A helping friend for the OP-1 synthesizer."),
