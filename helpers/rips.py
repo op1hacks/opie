@@ -32,7 +32,6 @@ def transcode(input, codec, output, codec_flags=[]):
         ["-c:a", codec] + \
         codec_flags + \
         [output]
-    click.echo(args)
     check_call(args)
 
 def create_rip(mount, name):
